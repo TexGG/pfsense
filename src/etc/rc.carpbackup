@@ -114,6 +114,13 @@ if (isset($config['dhcpdv6']) && is_array($config['dhcpdv6'])) {
 	}
 }
 
+if (file_exists("/usr/local/etc/rc.d/quagga.sh")) {
+	// used to sleep(10); here, as apparently it worked around some issue w/2.0. w/2.1, 
+	// it breaks things on systems with a significant number of CARP IPs.
+	log_error("Stopping QuaggaOSPF instance on {$friendly_descr} because of transition to CARP backup.");
+	mwexec_bg("/usr/local/etc/rc.d/quagga.sh stop");
+}
+
 $pluginparams = array();
 $pluginparams['type'] = 'carp';
 $pluginparams['event'] = 'rc.carpbackup';
